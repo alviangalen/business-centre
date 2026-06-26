@@ -119,11 +119,9 @@ function Navbar() {
           {/* Logo Placeholder */}
           <div className="flex-shrink-0 flex items-center gap-3">
             <div
-              className="w-10 h-10 rounded-lg flex items-center justify-center text-xs font-bold"
-              style={{ background: COLORS.red, color: "#fff" }}
-              title="Tempatkan logo BC di sini"
+              className="w-18 h-18 rounded-lg flex items-center justify-center text-xs font-bold"
             >
-              BC
+              <img src="/src/imports/logo.png" alt="Logo" className="w-full h-full object-contain" />
             </div>
             <div className="hidden sm:block">
               <p
@@ -175,7 +173,7 @@ function Navbar() {
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
               }}
             >
-              Pelajari Lebih
+              Pelajari Lebih Lanjut
             </button>
           </div>
 
@@ -805,7 +803,7 @@ function ActivitiesSection() {
           <div className="grid lg:grid-cols-5">
             <div className="lg:col-span-3 relative" style={{ background: COLORS.gray100 }}>
               <img
-                src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=900&h=600&fit=crop&auto=format"
+                src="src/imports/monitoring.png"
                 alt="Tim Alfamart melakukan monitoring dan evaluasi operasional Business Centre SMKN 8 Jakarta"
                 className="w-full h-80 lg:h-full object-cover"
                 style={{ minHeight: "320px" }}
