@@ -121,7 +121,7 @@ function Navbar() {
             <div
               className="w-18 h-18 rounded-lg flex items-center justify-center text-xs font-bold"
             >
-              <img src="/src/imports/logo.png" alt="Logo" className="w-full h-full object-contain" />
+              <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
             </div>
             <div className="hidden sm:block">
               <p
@@ -173,7 +173,7 @@ function Navbar() {
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
               }}
             >
-              Pelajari Lebih Lanjut
+              Pelajari Lebih
             </button>
           </div>
 
@@ -803,7 +803,7 @@ function ActivitiesSection() {
           <div className="grid lg:grid-cols-5">
             <div className="lg:col-span-3 relative" style={{ background: COLORS.gray100 }}>
               <img
-                src="src/imports/monitoring.png"
+                src="/monitoring.png"
                 alt="Tim Alfamart melakukan monitoring dan evaluasi operasional Business Centre SMKN 8 Jakarta"
                 className="w-full h-80 lg:h-full object-cover"
                 style={{ minHeight: "320px" }}
