@@ -44,11 +44,23 @@ app.get('/api/galeri', async (req, res) => {
     });
     
     const rows = response.data.values || [];
+    
+    // Helper to convert Google Drive viewing links to direct image links
+    const getDirectImageUrl = (url) => {
+      if (!url) return '';
+      const driveRegex = /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/;
+      const match = url.match(driveRegex);
+      if (match && match[1]) {
+        return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+      }
+      return url;
+    };
+
     // Map to an array of objects
     const galeriData = rows.map(row => ({
       bulan: row[0] || '',
       minggu: row[1] || '',
-      imageUrl: row[2] || '',
+      imageUrl: getDirectImageUrl(row[2]),
       description: row[3] || '',
     }));
 
