@@ -46,26 +46,7 @@ const COLORS = {
   dark: "#0D1117",
 };
 
-const salesData = [
-  { month: "Mei", revenue: 3200000, target: 3000000 },
-  { month: "Jun", revenue: 4100000, target: 3500000 },
-  { month: "Jul", revenue: 3750000, target: 3800000 },
-  { month: "Agt", revenue: 5200000, target: 4500000 },
-  { month: "Sep", revenue: 4800000, target: 4800000 },
-  { month: "Okt", revenue: 6300000, target: 5500000 },
-  { month: "Nov", revenue: 7100000, target: 6000000 },
-];
-
-const galleryPiket = [
-  { id: 1, name: "Alya Ramadhani", role: "Kasir", week: "Minggu I" },
-  { id: 2, name: "Budi Santoso", role: "Display", week: "Minggu I" },
-  { id: 3, name: "Citra Dewi", role: "Kasir", week: "Minggu II" },
-  { id: 4, name: "Dian Pratama", role: "Stock", week: "Minggu II" },
-  { id: 5, name: "Eka Nurhayati", role: "Display", week: "Minggu III" },
-  { id: 6, name: "Fajar Maulana", role: "Kasir", week: "Minggu III" },
-  { id: 7, name: "Gita Lestari", role: "Stock", week: "Minggu IV" },
-  { id: 8, name: "Hendra Wijaya", role: "Display", week: "Minggu IV" },
-];
+// Dummy data removed. Data is fetched directly from Google Sheets via API.
 
 const formatRupiah = (v: number) =>
   new Intl.NumberFormat("id-ID", {
@@ -913,16 +894,30 @@ function ActivitiesSection() {
 
 // ─── GALLERY ──────────────────────────────────────────────────
 function GallerySection() {
-  const unsplashIds = [
-    "photo-1665664660924-255a6167f498",
-    "photo-1666533835131-5cd525e9e965",
-    "photo-1615466178532-b6d2f9c304de",
-    "photo-1665664660924-255a6167f498",
-    "photo-1551161001-5c4184cc4317",
-    "photo-1617078913444-5bfe537fe74c",
-    "photo-1666533835131-5cd525e9e965",
-    "photo-1615466178532-b6d2f9c304de",
-  ];
+  const [galleryItems, setGalleryItems] = useState<{bulan: string, minggu: string, imageUrl: string, description: string}[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/galeri')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setGalleryItems(data.data);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
+  const groupedGallery = galleryItems.reduce((acc, item) => {
+    const bulan = item.bulan || 'Tanpa Keterangan Bulan';
+    if (!acc[bulan]) acc[bulan] = [];
+    acc[bulan].push(item);
+    return acc;
+  }, {} as Record<string, typeof galleryItems>);
 
   return (
     <section id="galeri" className="py-24" style={{ background: COLORS.gray50 }}>
@@ -965,48 +960,72 @@ function GallerySection() {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {galleryPiket.map((person, i) => (
-            <div
-              key={person.id}
-              className="group relative rounded-2xl overflow-hidden shadow-sm cursor-pointer transition-all hover:-translate-y-1 hover:shadow-lg"
-              style={{ background: COLORS.gray100, aspectRatio: "3/4" }}
-            >
-              <img
-                src={`https://images.unsplash.com/${unsplashIds[i % unsplashIds.length]}?w=400&h=530&fit=crop&auto=format`}
-                alt={`Foto piket ${person.name} — ${person.role}`}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              {/* Gradient overlay */}
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                style={{ background: `linear-gradient(to top, ${COLORS.dark}e0 0%, transparent 50%)` }}
-              />
-              {/* Info */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-200">
-                <p
-                  className="text-xs font-bold text-white"
-                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-                >
-                  {person.name}
-                </p>
-                <p
-                  className="text-xs text-white/70"
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                >
-                  {person.role} — {person.week}
-                </p>
+        {loading ? (
+          <div className="text-center py-10" style={{ color: COLORS.gray600, fontFamily: "'Inter', sans-serif" }}>
+            Memuat data galeri dari Google Sheets...
+          </div>
+        ) : galleryItems.length === 0 ? (
+          <div className="text-center py-10" style={{ color: COLORS.gray600, fontFamily: "'Inter', sans-serif" }}>
+            Belum ada foto galeri.
+          </div>
+        ) : (
+          <div className="space-y-12">
+            {Object.entries(groupedGallery).map(([bulan, items]) => (
+              <div key={bulan}>
+                {bulan !== 'Tanpa Keterangan Bulan' && (
+                  <h3
+                    className="text-xl font-extrabold mb-5"
+                    style={{ color: COLORS.dark, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                  >
+                    Bulan {bulan}
+                  </h3>
+                )}
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {items.map((item, i) => (
+                    <div
+                      key={i}
+                      className="group relative rounded-2xl overflow-hidden shadow-sm cursor-pointer transition-all hover:-translate-y-1 hover:shadow-lg"
+                      style={{ background: COLORS.gray100, aspectRatio: "3/4" }}
+                    >
+                      <img
+                        src={item.imageUrl}
+                        alt={item.description || "Foto Galeri"}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      {/* Gradient overlay */}
+                      <div
+                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                        style={{ background: `linear-gradient(to top, ${COLORS.dark}e0 0%, transparent 50%)` }}
+                      />
+                      
+                      {/* Minggu Badge */}
+                      {item.minggu && (
+                        <div
+                          className="absolute top-3 left-3 px-2 py-1 rounded-md text-[10px] font-bold z-10 shadow-sm"
+                          style={{ background: "rgba(255,255,255,0.9)", color: COLORS.dark, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                        >
+                          {item.minggu}
+                        </div>
+                      )}
+
+                      {/* Info */}
+                      {item.description && (
+                        <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-200">
+                          <p
+                            className="text-xs font-bold text-white"
+                            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                          >
+                            {item.description}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
-              {/* Week badge */}
-              <div
-                className="absolute top-3 left-3 px-2 py-1 rounded-md text-[10px] font-bold"
-                style={{ background: "rgba(255,255,255,0.9)", color: COLORS.dark, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-              >
-                {person.week}
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         <div className="mt-8 flex justify-center">
           <button
@@ -1042,15 +1061,15 @@ const CustomTooltip = ({ active, payload, label }: {
           className="text-xs font-bold mb-2"
           style={{ color: COLORS.dark, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
         >
-          {label} 2026
+          {label}
         </p>
         {payload.map((p) => (
           <p
             key={p.dataKey}
             className="text-xs"
-            style={{ color: p.dataKey === "revenue" ? COLORS.red : COLORS.blue, fontFamily: "'Inter', sans-serif" }}
+            style={{ color: p.dataKey === "pendapatan" ? COLORS.red : COLORS.blue, fontFamily: "'Inter', sans-serif" }}
           >
-            {p.dataKey === "revenue" ? "Pendapatan: " : "Target: "}
+            {p.dataKey === "pendapatan" ? "Pendapatan: " : "Target: "}
             {formatRupiah(p.value)}
           </p>
         ))}
@@ -1061,9 +1080,27 @@ const CustomTooltip = ({ active, payload, label }: {
 };
 
 function StatisticsSection() {
-  const total = salesData.reduce((s, d) => s + d.revenue, 0);
-  const best = salesData.reduce((m, d) => (d.revenue > m.revenue ? d : m), salesData[0]);
-  const avg = Math.round(total / salesData.length);
+  const [salesData, setSalesData] = useState<{bulan: string, pendapatan: number, target: number}[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/penjualan')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setSalesData(data.data);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
+  const total = salesData.reduce((s, d) => s + d.pendapatan, 0);
+  const best = salesData.length > 0 ? salesData.reduce((m, d) => (d.pendapatan > m.pendapatan ? d : m), salesData[0]) : { bulan: '-', pendapatan: 0 };
+  const avg = salesData.length > 0 ? Math.round(total / salesData.length) : 0;
 
   return (
     <section id="statistik" className="py-24" style={{ background: "#fff" }}>
@@ -1085,114 +1122,122 @@ function StatisticsSection() {
             className="text-sm"
             style={{ color: COLORS.gray600, fontFamily: "'Inter', sans-serif" }}
           >
-            Data pendapatan bulanan Business Centre periode Mei–November 2024
+            Data pendapatan bulanan Business Centre (Diupdate setiap akhir bulan)
           </p>
         </div>
 
         {/* KPI Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-10">
-          {[
-            { label: "Total Pendapatan", value: formatRupiah(total), sub: "Mei – Nov 2024", color: COLORS.red },
-            { label: "Bulan Terbaik", value: best.month + " 2024", sub: formatRupiah(best.revenue), color: COLORS.blue },
-            { label: "Rata-rata/Bulan", value: formatRupiah(avg), sub: "7 bulan berjalan", color: "#16a34a" },
-          ].map(({ label, value, sub, color }) => (
+        {loading ? (
+          <div className="text-center py-10" style={{ color: COLORS.gray600, fontFamily: "'Inter', sans-serif" }}>
+            Memuat statistik penjualan dari Google Sheets...
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-10">
+              {[
+                { label: "Total Pendapatan", value: formatRupiah(total), sub: `${salesData.length} bulan tercatat`, color: COLORS.red },
+                { label: "Bulan Terbaik", value: best.bulan, sub: formatRupiah(best.pendapatan || 0), color: COLORS.blue },
+                { label: "Rata-rata/Bulan", value: formatRupiah(avg), sub: "Performa rata-rata", color: "#16a34a" },
+              ].map(({ label, value, sub, color }) => (
+                <div
+                  key={label}
+                  className="rounded-2xl p-5"
+                  style={{ background: COLORS.gray50, border: `1px solid ${COLORS.blue}10` }}
+                >
+                  <p
+                    className="text-xs font-medium mb-2"
+                    style={{ color: COLORS.gray600, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                  >
+                    {label}
+                  </p>
+                  <p
+                    className="text-lg font-extrabold mb-1"
+                    style={{ color, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                  >
+                    {value}
+                  </p>
+                  <p
+                    className="text-xs"
+                    style={{ color: COLORS.gray400, fontFamily: "'Inter', sans-serif" }}
+                  >
+                    {sub}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* Bar chart */}
             <div
-              key={label}
-              className="rounded-2xl p-5"
+              className="rounded-3xl p-6 sm:p-8"
               style={{ background: COLORS.gray50, border: `1px solid ${COLORS.blue}10` }}
             >
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
+                <h3
+                  className="text-base font-bold"
+                  style={{ color: COLORS.dark, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                >
+                  Grafik Pendapatan vs Target Bulanan
+                </h3>
+                <div className="flex items-center gap-5 text-xs" style={{ fontFamily: "'Inter', sans-serif" }}>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-3 h-3 rounded-sm" style={{ background: COLORS.red }} />
+                    <span style={{ color: COLORS.gray600 }}>Pendapatan</span>
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-3 h-3 rounded-sm" style={{ background: `${COLORS.blue}50` }} />
+                    <span style={{ color: COLORS.gray600 }}>Target</span>
+                  </span>
+                </div>
+              </div>
+
+              <div className="w-full h-72">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={salesData}
+                    margin={{ top: 4, right: 4, left: 8, bottom: 4 }}
+                    barGap={4}
+                    barCategoryGap="30%"
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke={`${COLORS.blue}12`}
+                      vertical={false}
+                    />
+                    <XAxis
+                      dataKey="bulan"
+                      tick={{ fontSize: 12, fill: COLORS.gray600, fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600 }}
+                      axisLine={{ stroke: `${COLORS.blue}20` }}
+                      tickLine={false}
+                    />
+                    <YAxis
+                      tickFormatter={(v) => `${(v / 1000000).toFixed(1)}jt`}
+                      tick={{ fontSize: 11, fill: COLORS.gray400, fontFamily: "'Inter', sans-serif" }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <Tooltip content={<CustomTooltip />} cursor={{ fill: `${COLORS.blue}08` }} />
+                    <Bar dataKey="target" radius={[4, 4, 0, 0]} fill={`${COLORS.blue}25`} name="Target" />
+                    <Bar dataKey="pendapatan" radius={[6, 6, 0, 0]} name="Pendapatan">
+                      {salesData.map((entry, index) => (
+                        <Cell
+                          key={`revenue-cell-${entry.bulan}-${index}`}
+                          fill={entry.pendapatan >= entry.target ? COLORS.red : `${COLORS.red}80`}
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
               <p
-                className="text-xs font-medium mb-2"
-                style={{ color: COLORS.gray600, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-              >
-                {label}
-              </p>
-              <p
-                className="text-lg font-extrabold mb-1"
-                style={{ color, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-              >
-                {value}
-              </p>
-              <p
-                className="text-xs"
+                className="text-xs text-center mt-4"
                 style={{ color: COLORS.gray400, fontFamily: "'Inter', sans-serif" }}
               >
-                {sub}
+                Batang merah penuh = target tercapai / terlampaui · Merah transparan = di bawah target
               </p>
             </div>
-          ))}
-        </div>
-
-        {/* Bar chart */}
-        <div
-          className="rounded-3xl p-6 sm:p-8"
-          style={{ background: COLORS.gray50, border: `1px solid ${COLORS.blue}10` }}
-        >
-          <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
-            <h3
-              className="text-base font-bold"
-              style={{ color: COLORS.dark, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-            >
-              Grafik Pendapatan vs Target Bulanan
-            </h3>
-            <div className="flex items-center gap-5 text-xs" style={{ fontFamily: "'Inter', sans-serif" }}>
-              <span className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-sm" style={{ background: COLORS.red }} />
-                <span style={{ color: COLORS.gray600 }}>Pendapatan</span>
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-sm" style={{ background: `${COLORS.blue}50` }} />
-                <span style={{ color: COLORS.gray600 }}>Target</span>
-              </span>
-            </div>
-          </div>
-
-          <div className="w-full h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={salesData}
-                margin={{ top: 4, right: 4, left: 8, bottom: 4 }}
-                barGap={4}
-                barCategoryGap="30%"
-              >
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  stroke={`${COLORS.blue}12`}
-                  vertical={false}
-                />
-                <XAxis
-                  dataKey="month"
-                  tick={{ fontSize: 12, fill: COLORS.gray600, fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600 }}
-                  axisLine={{ stroke: `${COLORS.blue}20` }}
-                  tickLine={false}
-                />
-                <YAxis
-                  tickFormatter={(v) => `${(v / 1000000).toFixed(1)}jt`}
-                  tick={{ fontSize: 11, fill: COLORS.gray400, fontFamily: "'Inter', sans-serif" }}
-                  axisLine={false}
-                  tickLine={false}
-                />
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: `${COLORS.blue}08` }} />
-                <Bar dataKey="target" radius={[4, 4, 0, 0]} fill={`${COLORS.blue}25`} name="Target" />
-                <Bar dataKey="revenue" radius={[6, 6, 0, 0]} name="Pendapatan">
-                  {salesData.map((entry, index) => (
-                    <Cell
-                      key={`revenue-cell-${entry.month}-${index}`}
-                      fill={entry.revenue >= entry.target ? COLORS.red : `${COLORS.red}80`}
-                    />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          <p
-            className="text-xs text-center mt-4"
-            style={{ color: COLORS.gray400, fontFamily: "'Inter', sans-serif" }}
-          >
-            Batang merah penuh = target tercapai / terlampaui · Merah transparan = di bawah target
-          </p>
-        </div>
+          </>
+        )}
       </div>
     </section>
   );

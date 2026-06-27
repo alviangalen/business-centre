@@ -21,19 +21,33 @@ Beberapa keunggulan dari kemitraan ini antara lain:
 
 ## Cara Menjalankan Proyek (Development)
 
+Proyek ini telah dikonfigurasi menggunakan arsitektur *monorepo* dengan **pnpm workspaces** yang memisahkan antara *frontend* (React/Vite) dan *backend* (Express Serverless).
+
 Untuk menjalankan kode *landing page* ini secara lokal di komputer Anda, ikuti langkah-langkah berikut:
 
-1. **Instalasi Dependensi**  
-   Buka terminal di direktori proyek ini dan jalankan perintah:
+1. **Persiapan `.env` (Environment Variables)**  
+   Duplikat file `.env.example` dan ubah namanya menjadi `.env`.  
+   Buka file `.env` dan masukkan konfigurasi Google Sheets (seperti `SPREADSHEET_ID` dan `GOOGLE_SHEETS_API_KEY`).
+
+2. **Instalasi Dependensi**  
+   Buka terminal di direktori proyek ini (folder utama) dan jalankan perintah:
    ```bash
-   npm install
+   pnpm install
    ```
 
-2. **Menjalankan Development Server**  
-   Setelah instalasi selesai, jalankan perintah:
+3. **Menjalankan Development Server**  
+   Setelah instalasi selesai, jalankan perintah ini di folder utama:
    ```bash
-   npm run dev
+   pnpm dev
    ```
+   Perintah ini akan secara otomatis menyalakan *backend* di port `3001` dan *frontend* di port `5173`.
 
-3. **Membuka di Browser**  
-   Vite akan memberikan URL lokal di terminal (biasanya `http://localhost:5173` atau `http://localhost:5174`). Buka tautan tersebut di browser Anda untuk melihat hasilnya secara langsung.
+4. **Membuka di Browser**  
+   Buka tautan `http://localhost:5173` di browser Anda untuk melihat hasilnya secara langsung. Semua fungsi yang terhubung ke Google Sheets sudah siap diuji.
+
+---
+## Deployment (Vercel)
+
+Proyek ini siap untuk dideploy ke [Vercel](https://vercel.com).
+File `vercel.json` telah dikonfigurasi secara otomatis untuk membangun (build) *frontend* sebagai website statis dan melayani *backend* di path `/api/*` sebagai Serverless Functions.
+Jangan lupa untuk memasukkan environment variables di Dashboard Vercel Anda sebelum melakukan deployment.

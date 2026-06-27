@@ -1,5 +1,9 @@
 packages:
-  - '.'
+  - 'frontend'
+  - 'backend'
+allowBuilds:
+  '@tailwindcss/oxide': true
+  esbuild: true
 supportedArchitectures:
   os:
     - linux
