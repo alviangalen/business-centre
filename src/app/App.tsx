@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import heroImage from "@/imports/image.png";
+import heroImage from "@/imports/foto-depan2.jpg";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 import {
   BarChart,
@@ -145,7 +145,7 @@ function Navbar() {
               <button
                 key={l.href}
                 onClick={() => scrollTo(l.href)}
-                className="px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-red-50"
+                className="px-4 py-2 rounded-lg text-sm font-semibold transition-all hover:opacity-90 active:scale-95"
                 style={{
                   color: COLORS.dark,
                   fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -162,20 +162,7 @@ function Navbar() {
             ))}
           </nav>
 
-          {/* CTA */}
-          <div className="hidden md:block flex-shrink-0">
-            <button
-              onClick={() => scrollTo("#kemitraan")}
-              className="px-4 py-2 rounded-lg text-sm font-semibold transition-all hover:opacity-90 active:scale-95"
-              style={{
-                background: COLORS.red,
-                color: "#fff",
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-              }}
-            >
-              Pelajari Lebih
-            </button>
-          </div>
+          
 
           {/* Mobile toggle */}
           <button
@@ -290,6 +277,9 @@ function HeroSection() {
           {/* CTAs */}
           <div className="flex flex-wrap gap-3 mb-12">
             <button
+              onClick={() => {
+                document.querySelector("#kemitraan")?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }}
               className="px-6 py-3 rounded-xl font-semibold text-sm transition-all hover:opacity-90 active:scale-95"
               style={{
                 background: COLORS.yellow,
@@ -301,6 +291,9 @@ function HeroSection() {
               Pelajari Lebih Lanjut
             </button>
             <button
+              onClick={() => {
+                document.querySelector("#galeri")?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }}
               className="px-6 py-3 rounded-xl font-semibold text-sm transition-all hover:bg-white/20 border"
               style={{
                 background: "transparent",
@@ -396,7 +389,7 @@ function PartnershipSection() {
             style={{ color: COLORS.gray600, fontFamily: "'Inter', sans-serif" }}
           >
             Sejak tahun 2023, SMKN 8 Jakarta menjalin kerjasama resmi dengan PT Sumber Alfaria Trijaya Tbk (Alfamart)
-            dalam program Teaching Factory — menjadikan sekolah sebagai pusat pembelajaran bisnis ritel yang autentik
+            dalam program Teaching Factory menjadikan sekolah sebagai pusat pembelajaran bisnis ritel yang autentik
             dan terstandar industri nasional.
           </p>
         </div>
@@ -506,7 +499,7 @@ function PartnershipSection() {
                   className="text-2xl font-extrabold"
                   style={{ color: COLORS.red, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                 >
-                  2023
+                  2010
                 </p>
                 <p
                   className="text-xs"
@@ -550,7 +543,7 @@ function FloorPlanSection() {
             style={{ background: COLORS.gray100, minHeight: "400px" }}
           >
             <img
-              src="https://images.unsplash.com/photo-1670684684445-a4504dca0bbc?w=700&h=500&fit=crop&auto=format"
+              src="/denah.jpeg"
               alt="Denah letak Business Centre di lingkungan SMKN 8 Jakarta"
               className="w-full h-full object-cover"
               style={{ minHeight: "400px" }}
@@ -625,7 +618,7 @@ function FloorPlanSection() {
               style={{ color: COLORS.blue, fontFamily: "'Inter', sans-serif" }}
             >
               <MapPin size={13} />
-              Jl. Raya Kalimalang, Duren Sawit, Jakarta Timur 13440
+              Jl. Pejaten Raya, RT.6/RW.6, Pejaten Bar., Ps. Minggu, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12510
             </div>
           </div>
         </div>
@@ -1050,7 +1043,7 @@ const CustomTooltip = ({ active, payload, label }: {
           className="text-xs font-bold mb-2"
           style={{ color: COLORS.dark, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
         >
-          {label} 2024
+          {label} 2026
         </p>
         {payload.map((p) => (
           <p
@@ -1219,10 +1212,9 @@ function Footer() {
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-5">
               <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-sm"
-                style={{ background: COLORS.red, color: "#fff", fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              className="w-18 h-18 rounded-lg flex items-center justify-center text-xs font-bold"
               >
-                BC
+                <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
               </div>
               <div>
                 <p
@@ -1243,7 +1235,7 @@ function Footer() {
               className="text-sm leading-relaxed text-white/70 mb-5 max-w-sm"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              Laboratorium bisnis ritel nyata — tempat siswa SMKN 8 Jakarta belajar dan berkarya
+              Laboratorium bisnis ritel nyata tempat siswa SMKN 8 Jakarta belajar dan berkarya
               di bawah bimbingan profesional Alfamart.
             </p>
             {/* Partner logos */}
@@ -1273,7 +1265,7 @@ function Footer() {
             </h4>
             <div className="space-y-3">
               {[
-                { icon: MapPin, text: "Jl. Raya Kalimalang, Duren Sawit, Jakarta Timur 13440" },
+                { icon: MapPin, text: "Jl. Pejaten Raya, RT.6/RW.6, Pejaten Bar., Ps. Minggu, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12510" },
                 { icon: Phone, text: "(021) 8609707" },
                 { icon: Mail, text: "bc@smkn8jakarta.sch.id" },
               ].map(({ icon: Icon, text }) => (
@@ -1328,12 +1320,6 @@ function Footer() {
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
             © 2024 Business Centre SMKN 8 Jakarta. Hak cipta dilindungi.
-          </p>
-          <p
-            className="text-xs text-white/45"
-            style={{ fontFamily: "'Inter', sans-serif" }}
-          >
-            Dibuat dengan ❤ oleh siswa jurusan Bisnis Daring &amp; Pemasaran
           </p>
         </div>
       </div>
