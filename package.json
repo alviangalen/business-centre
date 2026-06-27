@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently \"pnpm --filter frontend dev\" \"pnpm --filter api dev\"",
-    "build": "pnpm --filter frontend build"
+    "build": "pnpm --filter frontend build && rm -rf dist && cp -r frontend/dist dist"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
