@@ -710,7 +710,7 @@ function FacilitiesSection() {
               style={{ background: COLORS.gray100 }}
             >
               <img
-                src="https://images.unsplash.com/photo-1665664660924-255a6167f498?w=700&h=480&fit=crop&auto=format"
+                src="/seragam.jpg"
                 alt="Seragam resmi petugas Business Centre SMKN 8 Jakarta"
                 className="w-full h-72 object-cover object-top"
               />
@@ -731,15 +731,14 @@ function FacilitiesSection() {
               className="text-sm leading-relaxed mb-5"
               style={{ color: COLORS.gray600, fontFamily: "'Inter', sans-serif" }}
             >
-              Seragam petugas BC SMKN 8 Jakarta dirancang mengadaptasi identitas visual Alfamart —
-              didominasi merah cerah dengan aksen putih bersih. Setiap petugas diwajibkan tampil rapi,
-              name tag terpasang, dan menggunakan alas kaki hitam tertutup.
+              Seragam petugas BC SMKN 8 Jakarta dirancang mengadaptasi identitas visual Alfamart
+              didominasi merah cerah dengan aksen putih bersih. Setiap petugas diwajibkan tampil rapi
+              dan menggunakan alas kaki hitam tertutup.
             </p>
             <div className="space-y-3">
               {[
-                { part: "Atasan", detail: "Kemeja merah lengan pendek + logo BC di dada kiri" },
+                { part: "Atasan", detail: "Kemeja putih dibalut dengan rompi merah" },
                 { part: "Bawahan", detail: "Celana/rok hitam formal, panjang menutup lutut" },
-                { part: "Name Tag", detail: "ID card resmi dengan foto, nama, dan jabatan" },
                 { part: "Alas Kaki", detail: "Sepatu hitam tertutup, bersih dan tidak bersuara" },
               ].map(({ part, detail }) => (
                 <div
