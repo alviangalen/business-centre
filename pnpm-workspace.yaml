@@ -1,6 +1,6 @@
 packages:
   - 'frontend'
-  - 'backend'
+  - 'api'
 allowBuilds:
   '@tailwindcss/oxide': true
   esbuild: true
